@@ -148,6 +148,7 @@ int insertNodeInternal(int previous_index , int current_index , int size )
         // printf("The next free is at %d\n" , next_free);
 
         printf("I am returning the index %d where i added %d when I added to an empty head\n" , rootNode , size );
+        return rootNode;
 
         
         
@@ -562,12 +563,46 @@ void mavalloc_free( void * ptr )
 
 int main()
 {
-    //Start with test cases for best_fit
-    mavalloc_init( 65535, BEST_FIT );
-    char * ptr = ( char * ) mavalloc_alloc ( 65535 );
-    printf("I allocated the whole thing\n");
-    printf("The return address %p\n" , ptr );
+    //Test case 7
+    mavalloc_init( 75000, BEST_FIT );
+    char * ptr1    = ( char * ) mavalloc_alloc ( 65535 );
+    char * buffer1 = ( char * ) mavalloc_alloc( 1 );
+    char * ptr4    = ( char * ) mavalloc_alloc ( 65 );
+    char * buffer2 = ( char * ) mavalloc_alloc( 1 );
+    char * ptr2    = ( char * ) mavalloc_alloc ( 1500 );
     printList();
+
+    printf("%p\n" , ptr1);
+
+    
+     //Test case 3
+     
+    // mavalloc_init( 65600, BEST_FIT );
+
+    // char * ptr1    = (char*)mavalloc_alloc( 65536 );
+    // char * ptr2    = (char*)mavalloc_alloc( 64 );
+    // printList();
+     
+    // printf("%p\n" , ptr1);
+    // printf("%p\n" , ptr2);
+    // printf("%d\n" ,mavalloc_size());
+
+    //Test Case 2
+    //  mavalloc_init( 128000, BEST_FIT );
+    //  char * ptr1    = (char*)mavalloc_alloc( 65535 );
+    //  char * ptr2    = (char*)mavalloc_alloc( 65 );
+    //  printList();
+     
+    //  printf("%p\n" , ptr1);
+    //  printf("%p\n" , ptr2);
+    //  printf("%d\n" ,mavalloc_size());
+    //Start with test cases for best_fit
+    //Test case 1
+    // mavalloc_init( 65535, BEST_FIT );
+    // char * ptr = ( char * ) mavalloc_alloc ( 65535 );
+    // printf("I allocated the whole thing\n");
+    // printf("The return address %p\n" , ptr );
+    // printList();
     
 }
 

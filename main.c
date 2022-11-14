@@ -13,12 +13,14 @@ int test_case_1()
   char * ptr = ( char * ) mavalloc_alloc ( 65535 );
 
   int size = mavalloc_size();
-
+  printf("%p\n" , ptr);
   // If you failed here your allocation on line 13 failed
   TINYTEST_ASSERT( ptr ); 
 
   // If you failed here your linked list did not have a single node
   // check your mavalloc_alloc or mavalloc_size
+
+
   TINYTEST_EQUAL( size, 1); 
   mavalloc_destroy( );
   return 1;
@@ -202,12 +204,16 @@ int test_case_5()
 */
 int test_case_6()
 {
+ 
   mavalloc_init( 71608, WORST_FIT );
+  
   char * ptr1    = ( char * ) mavalloc_alloc ( 65535 );
   char * buffer1 = ( char * ) mavalloc_alloc( 4 );
   char * ptr4    = ( char * ) mavalloc_alloc ( 64 );
   char * buffer2 = ( char * ) mavalloc_alloc( 4 );
   char * ptr2    = ( char * ) mavalloc_alloc ( 6000 );
+
+  
 
   // If you failed here your allocation on line 206 failed
   TINYTEST_ASSERT( ptr1 ); 
@@ -226,6 +232,8 @@ int test_case_6()
   ptr4 = ptr4;
 
   char * ptr3 = ( char * ) mavalloc_alloc ( 1000 );
+
+  
 
   // If you failed here then your worst fit picked the wrong node on line 228
   TINYTEST_EQUAL( ptr1, ptr3 ); 
@@ -347,6 +355,7 @@ int test_case_11()
   char * ptr3 = ( char * ) mavalloc_alloc ( 1024 );
 
   // if you failed here your allocation on line 339 failed
+  
   TINYTEST_ASSERT( ptr1 ); 
 
   // if you failed here your allocation on line 343 failed

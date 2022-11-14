@@ -13,6 +13,7 @@ static int rootNode=0;
 
 int current=-99;
 int previous=-99;
+void *arena;
 
 enum TYPE 
 {
@@ -40,18 +41,18 @@ static struct Node LinkedList[MAX_LINKED_LIST_SIZE];
 /* Helper functions for printing*/
 void printNode(int index)
 {
-    //printf("\n");
-    //printf("LinkedList[%d] is a %s of size %zu\n" , index , enum_string[LinkedList[index].type] , LinkedList[index].size);
-    //printf("LinkedList[%d] ------- LinkedList[%d] -------- LinkedList[%d]\n" , LinkedList[index].previous , index , LinkedList[index].next);
-    //printf("LinkedList[%d] is located at %p\n" , index , LinkedList[index].arena );
-    //printf("\n");
+    ////printf("\n");
+    ////printf("LinkedList[%d] is a %s of size %zu\n" , index , enum_string[LinkedList[index].type] , LinkedList[index].size);
+    ////printf("LinkedList[%d] ------- LinkedList[%d] -------- LinkedList[%d]\n" , LinkedList[index].previous , index , LinkedList[index].next);
+    ////printf("LinkedList[%d] is located at %p\n" , index , LinkedList[index].arena );
+    ////printf("\n");
 
 }
 
 void printList()
 {
     int index=rootNode;
-    //printf("\n\n");
+    ////printf("\n\n");
 
     while( (index != -1) & (LinkedList[index].in_use))
     {
@@ -68,7 +69,7 @@ int findfreeNodeInternal(size_t size)
         if (LinkedList[i].in_use==0 )
         {
             
-            //printf("\n I found a free node at %d to insert process of size%zu\n" , i , size);
+            ////printf("\n I found a free node at %d to insert process of size%zu\n" , i , size);
             printNode(i);
             
             return i;
@@ -127,7 +128,7 @@ int insertNodeInternal(int previous_index , int current_index , int size )
         }
        
 
-        //printf("I am adding when everything is empty. Need to initialize with a hole\n");
+        ////printf("I am adding when everything is empty. Need to initialize with a hole\n");
         LinkedList[current_index].next=rootNode;
         LinkedList[rootNode].previous=current_index;
         LinkedList[current_index].previous=-1;
@@ -138,9 +139,9 @@ int insertNodeInternal(int previous_index , int current_index , int size )
         LinkedList[rootNode].next=-1;
         rootNode=current_index;
        
-        // //printf("The next free is at %d\n" , next_free);
+        // ////printf("The next free is at %d\n" , next_free);
 
-        //printf("I am returning the index %d where i added %d when I added to an empty head\n" , rootNode , size );
+        ////printf("I am returning the index %d where i added %d when I added to an empty head\n" , rootNode , size );
 
         
         
@@ -152,7 +153,7 @@ int insertNodeInternal(int previous_index , int current_index , int size )
         
         
         
-        //printf("I am here when previous_index >= 0  . The value of previous_index is %d. \n\n" , previous_index);
+        ////printf("I am here when previous_index >= 0  . The value of previous_index is %d. \n\n" , previous_index);
         
         // A-Hole , Insert B
         
@@ -167,12 +168,12 @@ int insertNodeInternal(int previous_index , int current_index , int size )
        
         if (LinkedList[index_of_hole].size==size)
         {
-            //printf("I found the perfect hole\n\n");
+            ////printf("I found the perfect hole\n\n");
             current_index=index_of_hole;
             LinkedList[current_index].type=PROCESS;
             LinkedList[current_index].previous=previous_index;
             LinkedList[previous_index].next= current_index;
-            //printf("I am returning the index %d where i added %d when I added an in between in a perfect hole\n" , current_index , size );
+            ////printf("I am returning the index %d where i added %d when I added an in between in a perfect hole\n" , current_index , size );
             return current_index;
             
             
@@ -181,15 +182,15 @@ int insertNodeInternal(int previous_index , int current_index , int size )
         else
         {
            
-            //printf("The index of the hole is %d\n" , index_of_hole);
+            ////printf("The index of the hole is %d\n" , index_of_hole);
             
             
 
             LinkedList[current_index].previous=previous_index;
-            //printf("Set LinkedList[%d].previous_index to %d\n" , current_index , previous_index);
+            ////printf("Set LinkedList[%d].previous_index to %d\n" , current_index , previous_index);
 
             LinkedList[previous_index].next=current_index;
-            //printf("Set LinkedList[%d].next to %d\n" , previous_index , current_index);
+            ////printf("Set LinkedList[%d].next to %d\n" , previous_index , current_index);
 
             LinkedList[current_index].next=index_of_hole;
         
@@ -197,7 +198,7 @@ int insertNodeInternal(int previous_index , int current_index , int size )
             
             
             // LinkedList[current_index].previous_index=LinkedList[previous_index].previous_index;
-            // //printf("Added Linkedlist[%d].previous_index is Linkedlist[%d]\n" , current_index , LinkedList[previous_index].previous_index);
+            // ////printf("Added Linkedlist[%d].previous_index is Linkedlist[%d]\n" , current_index , LinkedList[previous_index].previous_index);
             // LinkedList[current_index].next=previous_index;
             // LinkedList[previous_index].next=index_of_hole;
             // LinkedList[previous_index].previous_index=current_index;
@@ -208,7 +209,7 @@ int insertNodeInternal(int previous_index , int current_index , int size )
             LinkedList[index_of_hole].previous=current_index;
             //set arena
             LinkedList[index_of_hole].size=LinkedList[index_of_hole].size-size;
-            //printf("I am returning the index %d where i added %d and the remaining was a hole\n" , current_index , size );
+            ////printf("I am returning the index %d where i added %d and the remaining was a hole\n" , current_index , size );
             return current_index;
 
         }
@@ -228,8 +229,8 @@ int insertNodeInternal(int previous_index , int current_index , int size )
         // }
 
         
-        //printf("I am adding to the front of the head , but there are processes behind it.\n");
-        //printf("The current_index index is %d , the previous_index index is %d \n" , current_index , previous_index);
+        ////printf("I am adding to the front of the head , but there are processes behind it.\n");
+        ////printf("The current_index index is %d , the previous_index index is %d \n" , current_index , previous_index);
 
         //need to check if it is a perfect fit.
 
@@ -237,9 +238,9 @@ int insertNodeInternal(int previous_index , int current_index , int size )
 
         if (LinkedList[rootNode].size==size)
         {
-            //printf("We have a perfect fit at the front of the head\n");
+            ////printf("We have a perfect fit at the front of the head\n");
             LinkedList[rootNode].type=PROCESS;
-            //printf("i am adding to front of the head but processes behind and it is a perferct fit. I returned %d\n" , rootNode);
+            ////printf("i am adding to front of the head but processes behind and it is a perferct fit. I returned %d\n" , rootNode);
             return rootNode;
         }
         else
@@ -254,7 +255,7 @@ int insertNodeInternal(int previous_index , int current_index , int size )
             LinkedList[rootNode].type=HOLE;
             rootNode=current_index;
             
-            //printf("i am adding to front of the head but processes behind and created a hole. I returned %d\n" , rootNode);
+            ////printf("i am adding to front of the head but processes behind and created a hole. I returned %d\n" , rootNode);
             return rootNode;
 
         }
@@ -276,7 +277,7 @@ int insertNode_FirstFit(size_t size)
     int index=findfreeNodeInternal(size);
 
     current = rootNode;
-    //printf("The current root is at index %d\n" , current);
+    ////printf("The current root is at index %d\n" , current);
     int previous = -1;
     int ret=-1;
     
@@ -289,7 +290,7 @@ int insertNode_FirstFit(size_t size)
 
     if(LinkedList[current].type== HOLE && LinkedList[current].size>=size)
     {
-        //printf("There is a free node at the head.\n");
+        ////printf("There is a free node at the head.\n");
         previous=-1 ;
         
     }
@@ -298,13 +299,13 @@ int insertNode_FirstFit(size_t size)
     {
         while( current>=0 && LinkedList[current].in_use )
         {
-            //printf("Current node at index %d is a %s and has size %zu\n" , current , enum_string[LinkedList[current].type] , LinkedList[current].size);
+            ////printf("Current node at index %d is a %s and has size %zu\n" , current , enum_string[LinkedList[current].type] , LinkedList[current].size);
             // if(LinkedList[current].size>size && LinkedList[current].type==HOLE)
             if(LinkedList[LinkedList[current].next].size>=size && LinkedList[LinkedList[current].next].type==HOLE)
             {
                 
-                //printf("MATCH: Current node at index %d is a %s and has size %zu\n" , current ,enum_string[LinkedList[current].type] , LinkedList[current].size);
-                //printf("MATCH: Next index is a hole\n");
+                ////printf("MATCH: Current node at index %d is a %s and has size %zu\n" , current ,enum_string[LinkedList[current].type] , LinkedList[current].size);
+                ////printf("MATCH: Next index is a hole\n");
                 previous=current;
                 break;
             
@@ -320,7 +321,7 @@ int insertNode_FirstFit(size_t size)
     
 
     //at this point the previous is in_use. 
-    //printf("The previous value %d  is currently filled with a process and the next one is either not in use or a hole . \n" , previous );
+    ////printf("The previous value %d  is currently filled with a process and the next one is either not in use or a hole . \n" , previous );
     if (previous>=0)
     {
          printNode(previous);
@@ -358,7 +359,7 @@ int insertNode_FirstFit(size_t size)
     LinkedList[next].arena = LinkedList[index].arena+ LinkedList[index].size;
 
 
-    // //printf("\nTWO NEW NODES THAT WERE CREATED ARE:\n");
+    // ////printf("\nTWO NEW NODES THAT WERE CREATED ARE:\n");
     
     // printNode(index);
     // printNode(LinkedList[index].next);
@@ -380,7 +381,7 @@ int insertNode_NextFit(size_t size)
     if (current==-99 & previous==-99)
     {
         //nothing initialized yet
-        //printf("I initialized current and previous once\n");
+        ////printf("I initialized current and previous once\n");
         current=rootNode;
         previous=-1;
     }
@@ -395,8 +396,8 @@ int insertNode_NextFit(size_t size)
     
 
     
-    //printf("The current root is at index %d\n" , current);
-    //printf("The previous is at index %d\n " , previous);
+    ////printf("The current root is at index %d\n" , current);
+    ////printf("The previous is at index %d\n " , previous);
     
     int ret=-1;
     
@@ -409,7 +410,7 @@ int insertNode_NextFit(size_t size)
 
     if(LinkedList[current].type== HOLE && LinkedList[current].size>=size)
     {
-        //printf("There is a free node at the head.\n");
+        ////printf("There is a free node at the head.\n");
         previous=-1 ;
         
     }
@@ -418,13 +419,13 @@ int insertNode_NextFit(size_t size)
     {
         while( current>=0 && LinkedList[current].in_use )
         {
-            //printf("Current node at index %d is a %s and has size %zu\n" , current , enum_string[LinkedList[current].type] , LinkedList[current].size);
+            ////printf("Current node at index %d is a %s and has size %zu\n" , current , enum_string[LinkedList[current].type] , LinkedList[current].size);
             // if(LinkedList[current].size>size && LinkedList[current].type==HOLE)
             if(LinkedList[LinkedList[current].next].size>=size && LinkedList[LinkedList[current].next].type==HOLE)
             {
                 
-                //printf("MATCH: Current node at index %d is a %s and has size %zu\n" , current ,enum_string[LinkedList[current].type] , LinkedList[current].size);
-                //printf("MATCH: Next index is a hole\n");
+                ////printf("MATCH: Current node at index %d is a %s and has size %zu\n" , current ,enum_string[LinkedList[current].type] , LinkedList[current].size);
+                ////printf("MATCH: Next index is a hole\n");
                 previous=current;
                 break;
             
@@ -450,7 +451,7 @@ int insertNode_NextFit(size_t size)
     
 
     //at this point the previous is in_use. 
-    //printf("The previous value %d  is currently filled with a process and the next one is either not in use or a hole . \n" , previous );
+    ////printf("The previous value %d  is currently filled with a process and the next one is either not in use or a hole . \n" , previous );
     if (previous>=0)
     {
          printNode(previous);
@@ -487,7 +488,7 @@ int insertNode_NextFit(size_t size)
     LinkedList[next].arena = LinkedList[index].arena+ LinkedList[index].size;
 
 
-    // //printf("\nTWO NEW NODES THAT WERE CREATED ARE:\n");
+    // ////printf("\nTWO NEW NODES THAT WERE CREATED ARE:\n");
     
     // printNode(index);
     // printNode(LinkedList[index].next);
@@ -507,7 +508,7 @@ int insertNode_BestFit(size_t size)
     int index=findfreeNodeInternal(size);
 
     current = rootNode;
-    //printf("The current root is at index %d\n" , current);
+    // //printf("The current root is at index %d\n" , current);
     int previous = -1;
     int ret=-1;
     
@@ -523,7 +524,7 @@ int insertNode_BestFit(size_t size)
 
     if(LinkedList[current].type== HOLE && LinkedList[current].size>=size)
     {
-        //printf("There is a free node at the head.\n");
+        ////printf("There is a free node at the head.\n");
         previous=-1 ;
         if (LinkedList[current].size<smallest_hole)
         {
@@ -538,14 +539,14 @@ int insertNode_BestFit(size_t size)
     
     while( current>=0 && LinkedList[current].in_use )
     {
-        //printf("Current node at index %d is a %s and has size %zu\n" , current , enum_string[LinkedList[current].type] , LinkedList[current].size);
+        // //printf("Current node at index %d is a %s and has size %zu\n" , current , enum_string[LinkedList[current].type] , LinkedList[current].size);
         // if(LinkedList[current].size>size && LinkedList[current].type==HOLE)
         if(LinkedList[LinkedList[current].next].size>=size && LinkedList[LinkedList[current].next].type==HOLE && LinkedList[LinkedList[current].next].size < smallest_hole )
         {
             smallest_hole= LinkedList[LinkedList[current].next].size;
             smallest_hole_index=LinkedList[current].next;
 
-            //printf("\nThe hole at index %d is of size %d\n" , smallest_hole_index , smallest_hole);
+            // //printf("\nThe hole at index %d is of size %d\n" , smallest_hole_index , smallest_hole);
              
             
             previous=current;
@@ -558,14 +559,14 @@ int insertNode_BestFit(size_t size)
         
     }
 
-    //printf("\nThe best place to insert a process of size %zu is at hole [%d] of size %d\n" ,size , smallest_hole_index , smallest_hole  );
+    // //printf("\nThe best place to insert a process of size %zu is at hole [%d] of size %d\n" ,size , smallest_hole_index , smallest_hole  );
 
     
 
     
 
     //at this point the previous is in_use. 
-    //printf("The previous value %d  is currently filled with a process and the next one is either not in use or a hole . \n" , previous );
+    // //printf("The previous value %d  is currently filled with a process and the next one is either not in use or a hole . \n" , previous );
     if (previous>=0)
     {
          printNode(previous);
@@ -624,7 +625,7 @@ int insertNode_WorstFit(size_t size)
     int index=findfreeNodeInternal(size);
 
     current = rootNode;
-    //printf("The current root is at index %d\n" , current);
+    ////printf("The current root is at index %d\n" , current);
     int previous = -1;
     int ret=-1;
     
@@ -640,7 +641,7 @@ int insertNode_WorstFit(size_t size)
 
     if(LinkedList[current].type== HOLE && LinkedList[current].size>=size)
     {
-        //printf("There is a free node at the head.\n");
+        ////printf("There is a free node at the head.\n");
         previous=-1 ;
         if (LinkedList[current].size>largest_hole)
         {
@@ -653,16 +654,17 @@ int insertNode_WorstFit(size_t size)
 
     
     
-    while( current>=0 && LinkedList[current].in_use )
+    int count=0;
+    while( current>=0 && LinkedList[current].in_use && count<5)
     {
-        //printf("Current node at index %d is a %s and has size %zu\n" , current , enum_string[LinkedList[current].type] , LinkedList[current].size);
+        ////printf("Current node at index %d is a %s and has size %zu\n" , current , enum_string[LinkedList[current].type] , LinkedList[current].size);
         // if(LinkedList[current].size>size && LinkedList[current].type==HOLE)
         if(LinkedList[LinkedList[current].next].size>=size && LinkedList[LinkedList[current].next].type==HOLE && LinkedList[LinkedList[current].next].size > largest_hole )
         {
             largest_hole= LinkedList[LinkedList[current].next].size;
             largest_hole_index=LinkedList[current].next;
 
-            //printf("\nThe hole at index %d is of size %d\n" , largest_hole_index , largest_hole);
+            ////printf("\nThe hole at index %d is of size %d\n" , largest_hole_index , largest_hole);
              
             
             previous=current;
@@ -670,19 +672,24 @@ int insertNode_WorstFit(size_t size)
         
 
         }
+        count++;
+        // if (x==10)
+        // {
+        //     break;
+        // }
         current=LinkedList[current].next;
         
         
     }
-
-    //printf("\nThe best place to insert a process of size %zu is at hole [%d] of size %d\n" ,size , largest_hole_index , largest_hole  );
+    
+    ////printf("\nThe best place to insert a process of size %zu is at hole [%d] of size %d\n" ,size , largest_hole_index , largest_hole  );
 
     
 
     
 
     //at this point the previous is in_use. 
-    //printf("The previous value %d  is currently filled with a process and the next one is either not in use or a hole . \n" , previous );
+    ////printf("The previous value %d  is currently filled with a process and the next one is either not in use or a hole . \n" , previous );
     if (previous>=0)
     {
          printNode(previous);
@@ -719,7 +726,7 @@ int insertNode_WorstFit(size_t size)
     LinkedList[next].arena = LinkedList[index].arena+ LinkedList[index].size;
 
 
-    // //printf("\nTWO NEW NODES THAT WERE CREATED ARE:\n");
+    // ////printf("\nTWO NEW NODES THAT WERE CREATED ARE:\n");
     
     // printNode(index);
     // printNode(LinkedList[index].next);
@@ -740,7 +747,7 @@ int insertNode_WorstFit(size_t size)
 int mavalloc_init( size_t size, enum ALGORITHM algorithm )
 {
   size_t aligned_size = ALIGN4(size);
-  void* arena = malloc(aligned_size);
+  arena = malloc(aligned_size);
 
   if(aligned_alloc<0)
   {
@@ -763,10 +770,10 @@ int mavalloc_init( size_t size, enum ALGORITHM algorithm )
   LinkedList[0].type = HOLE;
   initialized = 1;
 
-  //printf("-----------------------------------------------------\n");
-  //printf("Initialized head\n");
+  ////printf("-----------------------------------------------------\n");
+  ////printf("Initialized head\n");
   printNode(0);
-  //printf("-----------------------------------------------------\n");
+  ////printf("-----------------------------------------------------\n");
 
   // Setting global variables.
   global_algorithm=algorithm;
@@ -782,8 +789,16 @@ int mavalloc_init( size_t size, enum ALGORITHM algorithm )
 
 void mavalloc_destroy( )
 {
-  memset(LinkedList , 0 , sizeof(LinkedList));
-  
+//   memset(LinkedList , 0 , sizeof(LinkedList));
+  printf("I destroyed the linkedlist\n");
+  for(int i=0; i<MAX_LINKED_LIST_SIZE;i++)
+  {
+    LinkedList[i].type=HOLE;
+    LinkedList[i].in_use=0;
+    LinkedList[i].arena=0;
+    LinkedList[i].size=0;
+  }
+  free(arena);
   return;
 }
 
@@ -812,10 +827,12 @@ void * mavalloc_alloc( size_t size )
     //     return NULL;
 
     // } 
-    return LinkedList[index].arena;
+    //printf("I am about to return %p\n",LinkedList[index].arena);
+    // return LinkedList[index].arena;
   }
   else if(global_algorithm == WORST_FIT)
   {
+    
     index = insertNode_WorstFit(aligned_size);
     return LinkedList[index].arena;
   }
@@ -832,13 +849,13 @@ int removeNodeInternal(int node)
 {
   if(node<0 || node>=MAX_LINKED_LIST_SIZE)
   {
-    printf("EROROR:\n");
+    //printf("EROROR:\n");
 
   }
 
   if(LinkedList[node].in_use==0)
   {
-    printf("Cannot remove node. Not in use\n");
+    //printf("Cannot remove node. Not in use\n");
   }
 
   // check_if next is also a hole 
@@ -884,11 +901,12 @@ void mavalloc_free( void * ptr )
 
       removeNodeInternal(index);
      
-    //   printf("I removed node at index %d  whose pointer is supposed to be %p\n" , index , ptr);
-    //   printf("%p\n" , LinkedList[index].arena);
+    //   //printf("I removed node at index %d  whose pointer is supposed to be %p\n" , index , ptr);
+    //   //printf("%p\n" , LinkedList[index].arena);
     }
     index = LinkedList[index].next;
   }
+
 
   
 

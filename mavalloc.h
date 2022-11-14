@@ -87,7 +87,7 @@ void mavalloc_destroy( );
  *
  * \return A pointer to the available memory or NULL if no free block is found 
  **/
-void * mavalloc_alloc( size_t size );
+void * mavalloc_alloc( size_t size  );
 
 
 /*
