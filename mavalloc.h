@@ -34,6 +34,33 @@ enum ALGORITHM
   FIRST_FIT
 }; 
 
+enum id
+{
+    PROCESS , HOLE
+};
+
+const char * enum_type[] = {
+    "PROCESS",
+    "HOLE",
+    
+};
+
+struct Node
+{
+    int in_use;
+    int previous;
+    int next;
+
+    size_t size;
+
+    enum id type;
+
+    void* arena;
+
+};
+
+
+
 /**
  * @brief Initialize the allocation arena and set the algorithm type
  *
@@ -48,6 +75,7 @@ enum ALGORITHM
  * \return 0 on success. -1 on failure
  **/
 int mavalloc_init( size_t size, enum ALGORITHM algorithm );
+
 
 
 /**
