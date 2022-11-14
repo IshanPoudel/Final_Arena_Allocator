@@ -34,30 +34,15 @@ enum ALGORITHM
   FIRST_FIT
 }; 
 
-enum id
-{
-    PROCESS , HOLE
-};
 
-const char * enum_type[] = {
-    "PROCESS",
-    "HOLE",
+
+// const char *enum_string[] = {
+//     "PROCESS",
+//     "HOLE",
     
-};
+// };
 
-struct Node
-{
-    int in_use;
-    int previous;
-    int next;
 
-    size_t size;
-
-    enum id type;
-
-    void* arena;
-
-};
 
 
 

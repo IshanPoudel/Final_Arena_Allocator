@@ -82,19 +82,6 @@ int findfreeNodeInternal(size_t size)
 }
 /*End of helper functions*/
 
-int mavalloc_size( )
-{
-    int count=0;
-    for (int i=0; i<MAX_LINKED_LIST_SIZE;i++)
-    {
-        if(LinkedList[i].in_use)
-        {
-            count++;
-        }
-    }
-
-    return count;
-}
 /*Insertion of node function*/
 int insertNodeInternal(int previous_index , int current_index , int size )
 {
@@ -108,8 +95,6 @@ int insertNodeInternal(int previous_index , int current_index , int size )
     // Insert process , add hole.
     // Insert at current_index.
 
-   
-
 
     LinkedList[current_index].next=-1;
     LinkedList[current_index].previous=-1;
@@ -118,15 +103,6 @@ int insertNodeInternal(int previous_index , int current_index , int size )
 
     if (LinkedList[rootNode].previous==-1 && LinkedList[rootNode].next==-1)
     {
-
-        if(LinkedList[rootNode].size==size)
-        {
-            LinkedList[rootNode].type=PROCESS;
-            return rootNode;
-
-        }
-       
-
         //printf("I am adding when everything is empty. Need to initialize with a hole\n");
         LinkedList[current_index].next=rootNode;
         LinkedList[rootNode].previous=current_index;
@@ -148,9 +124,6 @@ int insertNodeInternal(int previous_index , int current_index , int size )
     }
     else if (previous_index>=0)
     {
-
-        
-        
         
         //printf("I am here when previous_index >= 0  . The value of previous_index is %d. \n\n" , previous_index);
         
@@ -163,8 +136,6 @@ int insertNodeInternal(int previous_index , int current_index , int size )
         //  B--A--(500) C is also 500.
         
         int  index_of_hole = LinkedList[previous_index].next;
-
-       
         if (LinkedList[index_of_hole].size==size)
         {
             //printf("I found the perfect hole\n\n");
@@ -232,8 +203,6 @@ int insertNodeInternal(int previous_index , int current_index , int size )
         //printf("The current_index index is %d , the previous_index index is %d \n" , current_index , previous_index);
 
         //need to check if it is a perfect fit.
-
-        
 
         if (LinkedList[rootNode].size==size)
         {
@@ -329,7 +298,6 @@ int insertNode_FirstFit(size_t size)
 
     if (previous>=-1)
     {
-        
         ret = insertNodeInternal(previous , index , size );
         //we insert a not between previoud and index which is always a process.
     }
@@ -572,8 +540,6 @@ int insertNode_BestFit(size_t size)
 
     }
 
-    
-
     if (previous>=-1)
     {
         ret = insertNodeInternal(previous , index , size );
@@ -740,19 +706,11 @@ int insertNode_WorstFit(size_t size)
 int mavalloc_init( size_t size, enum ALGORITHM algorithm )
 {
   size_t aligned_size = ALIGN4(size);
-  void* arena = malloc(aligned_size);
+  void* arena = malloc(65535);
 
   if(aligned_alloc<0)
   {
     return -1;
-  }
-
-  for(int i=0; i<MAX_LINKED_LIST_SIZE;i++)
-  {
-    LinkedList[i].size=0;
-    LinkedList[i].in_use=0;
-    LinkedList[i].arena=0;
-    LinkedList[i].type=HOLE;
   }
 
   LinkedList[0].arena= arena;
@@ -782,8 +740,7 @@ int mavalloc_init( size_t size, enum ALGORITHM algorithm )
 
 void mavalloc_destroy( )
 {
-  memset(LinkedList , 0 , sizeof(LinkedList));
-  
+  memset(LinkedList, 0 , sizeof(LinkedList) );
   return;
 }
 
@@ -807,11 +764,6 @@ void * mavalloc_alloc( size_t size )
   else if(global_algorithm == BEST_FIT)
   {
     index = insertNode_BestFit(aligned_size);
-    // if (index==-1)
-    // {
-    //     return NULL;
-
-    // } 
     return LinkedList[index].arena;
   }
   else if(global_algorithm == WORST_FIT)
@@ -847,7 +799,6 @@ int removeNodeInternal(int node)
   int next = LinkedList[node].next;
 
   //Have it happen a such that there are no hole.
-  
   if (LinkedList[next].in_use && LinkedList[next].type==HOLE)
   {
     //Change the previous and the next 
@@ -881,18 +832,19 @@ void mavalloc_free( void * ptr )
   {
     if (LinkedList[index].arena==ptr)
     {
-
       removeNodeInternal(index);
-     
-    //   printf("I removed node at index %d  whose pointer is supposed to be %p\n" , index , ptr);
-    //   printf("%p\n" , LinkedList[index].arena);
     }
     index = LinkedList[index].next;
   }
 
-  
-
 
   return;
+}
+
+int mavalloc_size( )
+{
+  int number_of_nodes = 0;
+
+  return number_of_nodes;
 }
 
