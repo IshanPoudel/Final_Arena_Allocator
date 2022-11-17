@@ -15,8 +15,6 @@ int current=-99;
 int previous=-99;
 void *arena;
 
-//rewrite all best fits and insert node function.
-
 enum TYPE 
 {
     PROCESS , HOLE
@@ -43,11 +41,11 @@ static struct Node LinkedList[MAX_LINKED_LIST_SIZE];
 /* Helper functions for printing*/
 void printNode(int index)
 {
-    printf("\n");
-    printf("LinkedList[%d] is a %s of size %zu\n" , index , enum_string[LinkedList[index].type] , LinkedList[index].size);
-    printf("LinkedList[%d] ------- LinkedList[%d] -------- LinkedList[%d]\n" , LinkedList[index].previous , index , LinkedList[index].next);
-    printf("LinkedList[%d] is located at %p\n" , index , LinkedList[index].arena );
-    printf("\n");
+    ////printf("\n");
+    ////printf("LinkedList[%d] is a %s of size %zu\n" , index , enum_string[LinkedList[index].type] , LinkedList[index].size);
+    ////printf("LinkedList[%d] ------- LinkedList[%d] -------- LinkedList[%d]\n" , LinkedList[index].previous , index , LinkedList[index].next);
+    ////printf("LinkedList[%d] is located at %p\n" , index , LinkedList[index].arena );
+    ////printf("\n");
 
 }
 
@@ -505,6 +503,9 @@ int insertNode_NextFit(size_t size)
 
 }
 
+
+
+
 int insertNode_BestFit(size_t size)
 {
     int index=findfreeNodeInternal(size);
@@ -813,16 +814,8 @@ void * mavalloc_alloc( size_t size )
 
   if(global_algorithm == FIRST_FIT)
   {
-    int i=0;
-    for (i =0;   i<MAX_LINKED_LIST_SIZE;i++)
-    {
-        if(LinkedList[i].type==HOLE && LinkedList[i].in_use && size<LinkedList[i].size)
-        {
-
-            LinkedList[i].type=PROCESS;
-            return LinkedList[i].arena;
-        }
-    }
+    index = insertNode_FirstFit(aligned_size);
+    return LinkedList[index].arena;
   }
   else if(global_algorithm == NEXT_FIT)
   {
@@ -916,10 +909,6 @@ void mavalloc_free( void * ptr )
     }
     index = LinkedList[index].next;
   }
-
-  
-  
-
 
 
   

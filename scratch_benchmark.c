@@ -283,17 +283,17 @@ int insertNodeInternal(int previous_index , int current_index , int size )
 
 
 
-int insertNode_BestFit(size_t size)
+int insertNode_WorstFit(size_t size)
 {
     int index=findfreeNodeInternal(size);
 
     current = rootNode;
-    //printf("The current root is at index %d\n" , current);
+    ////printf("The current root is at index %d\n" , current);
     int previous = -1;
     int ret=-1;
     
-    int smallest_hole = INT32_MAX;
-    int smallest_hole_index = current;
+    int largest_hole = 0;
+    int largest_hole_index=current;
 
     //we need to insert at index.
     //need to iterate until we find index?
@@ -304,12 +304,12 @@ int insertNode_BestFit(size_t size)
 
     if(LinkedList[current].type== HOLE && LinkedList[current].size>=size)
     {
-        //printf("There is a free node at the head.\n");
+        ////printf("There is a free node at the head.\n");
         previous=-1 ;
-        if (LinkedList[current].size<smallest_hole)
+        if (LinkedList[current].size>largest_hole)
         {
-            smallest_hole=LinkedList[current].size;
-            smallest_hole_index=0;
+            largest_hole=LinkedList[current].size;
+            largest_hole_index=0;
             
         }
         
@@ -317,16 +317,17 @@ int insertNode_BestFit(size_t size)
 
     
     
-    while( current>=0 && LinkedList[current].in_use )
+    int count=0;
+    while( current>=0 && LinkedList[current].in_use && count<5)
     {
-        //printf("Current node at index %d is a %s and has size %zu\n" , current , enum_string[LinkedList[current].type] , LinkedList[current].size);
+        ////printf("Current node at index %d is a %s and has size %zu\n" , current , enum_string[LinkedList[current].type] , LinkedList[current].size);
         // if(LinkedList[current].size>size && LinkedList[current].type==HOLE)
-        if(LinkedList[LinkedList[current].next].size>=size && LinkedList[LinkedList[current].next].type==HOLE && LinkedList[LinkedList[current].next].size < smallest_hole )
+        if(LinkedList[LinkedList[current].next].size>=size && LinkedList[LinkedList[current].next].type==HOLE && LinkedList[LinkedList[current].next].size > largest_hole )
         {
-            smallest_hole= LinkedList[LinkedList[current].next].size;
-            smallest_hole_index=LinkedList[current].next;
+            largest_hole= LinkedList[LinkedList[current].next].size;
+            largest_hole_index=LinkedList[current].next;
 
-            //printf("\nThe hole at index %d is of size %d\n" , smallest_hole_index , smallest_hole);
+            ////printf("\nThe hole at index %d is of size %d\n" , largest_hole_index , largest_hole);
              
             
             previous=current;
@@ -334,26 +335,29 @@ int insertNode_BestFit(size_t size)
         
 
         }
+        count++;
+        // if (x==10)
+        // {
+        //     break;
+        // }
         current=LinkedList[current].next;
         
         
     }
-
-    //printf("\nThe best place to insert a process of size %zu is at hole [%d] of size %d\n" ,size , smallest_hole_index , smallest_hole  );
+    
+    ////printf("\nThe best place to insert a process of size %zu is at hole [%d] of size %d\n" ,size , largest_hole_index , largest_hole  );
 
     
 
     
 
     //at this point the previous is in_use. 
-    //printf("The previous value %d  is currently filled with a process and the next one is either not in use or a hole . \n" , previous );
+    ////printf("The previous value %d  is currently filled with a process and the next one is either not in use or a hole . \n" , previous );
     if (previous>=0)
     {
-        //  printNode(previous);
+        //  //printf(previous);
 
     }
-
-    
 
     if (previous>=-1)
     {
@@ -385,10 +389,10 @@ int insertNode_BestFit(size_t size)
     LinkedList[next].arena = LinkedList[index].arena+ LinkedList[index].size;
 
 
-    // //printf("\nTWO NEW NODES THAT WERE CREATED ARE:\n");
+    // ////printf("\nTWO NEW NODES THAT WERE CREATED ARE:\n");
     
-    // printNode(index);
-    // printNode(LinkedList[index].next);
+    // //printf(index);
+    // //printf(LinkedList[index].next);
 
     
 
@@ -399,6 +403,7 @@ int insertNode_BestFit(size_t size)
 
 
 }
+
 
 
 /*End of four fits*/
@@ -456,90 +461,15 @@ void mavalloc_destroy( )
 void * mavalloc_alloc( size_t size )
 {
 
-  size_t aligned_size = ALIGN4(size);
-  int index;
-
-
- 
-  if(global_algorithm == BEST_FIT)
-  {
-    index = insertNode_BestFit(aligned_size);
-    // if (index==-1)
-    // {
-    //     return NULL;
-
-    // } 
-    return LinkedList[index].arena;
-  }
-  
-
-  // only return NULL on failure
-  return NULL;
-}
-
-int removeNodeInternal(int node)
-{
-  if(node<0 || node>=MAX_LINKED_LIST_SIZE)
-  {
-    //printf("EROROR:\n");
-
-  }
-
-  if(LinkedList[node].in_use==0)
-
-  {
-    //printf("Cannot remove node. Not in use\n");
-    return -1;
-  }
-
-  // check_if next is also a hole 
-  LinkedList[node].type=HOLE;
-  
-  int next = LinkedList[node].next;
-
-  //Have it happen a such that there are no hole.
-  
-  if (LinkedList[next].in_use && LinkedList[next].type==HOLE)
-  {
-    //Change the previous and the next 
-    // A--B--C--HOLE---D
-    // Trying to remove C. a-b-hole-d
-    LinkedList[node].size = LinkedList[node].size + LinkedList[next].size;
-    //Increase size of first hole where c was.
-
-    LinkedList[node].next = LinkedList[next].next;
-    //Link with the next hole D.
-
-    LinkedList[next].previous = node;
-
-    //Make the next hole available for use
-    LinkedList[next].in_use=0;
-
-
-
-  }
-
-  return 0;
+  int index = findfreeNodeInternal(size);
+  LinkedList[index] = malloc(sizeof(struct* Node));
 
 }
 
 void mavalloc_free( void * ptr )
 {
 
-  int index=rootNode;
-
-  while (index!=-1)
-  {
-    if (LinkedList[index].arena==ptr)
-    {
-
-      removeNodeInternal(index);
-     
-    //   //printf("I removed node at index %d  whose pointer is supposed to be %p\n" , index , ptr);
-    //   //printf("%p\n" , LinkedList[index].arena);
-    }
-    index = LinkedList[index].next;
-  }
+  free(ptr);
 
   
 
@@ -549,83 +479,83 @@ void mavalloc_free( void * ptr )
 
 int main()
 {
+    
+//   clock_t start , end;
 
-  clock_t start , end;
+//   double execution_time;
 
-  double execution_time;
+//   start=clock();
+  
 
-  start=clock();
+  
+//   mavalloc_init( 75000000, WORST_FIT );
+
+//   unsigned char* array[10000];
+
+//   for (int i=0; i<10000;i++)
+//   {
+//     array[i]=mavalloc_alloc(100+i);
+//   }
+
+//   // //printfList();
+
+//   for (int i=0; i<10000; i++)
+//   {
+//     if (i % 2==0 && i%3==0)
+//     {
+//       mavalloc_free(array[i]);
+//     }
+//   }
+
+
+
+//   char *ptr_1 = mavalloc_alloc(2000);
+//   char *ptr_2 = mavalloc_alloc(5000);
+//   mavalloc_free(ptr_2);
+//   char *ptr3=mavalloc_alloc(20);
+
+
+//   mavalloc_free(ptr_1);
+
+//   for (int i =5000 ; i<1000;i++)
+//   {
+//     if (i%5==0)
+//     {
+//       mavalloc_free(array[i]);
+//     }
+//   }
+
+//   unsigned char* second_array [400];
+
+//   for (int i=200; i<600;i++)
+//   {
+
+//     second_array[i]= mavalloc_alloc(i);
+
+//   }
+
+//   mavalloc_free(ptr3);
+
+
+//   for (int j=0; j<300;j++)
+//   {
+//     mavalloc_alloc(j*230);
+//   }
+
+//   mavalloc_free(ptr_1);
+
+//   for (int k=360; k<500; k++)
+//   {
+//     mavalloc_alloc(k*3);
+//   }
+//   end=clock();
+
+//   execution_time=((double) (end-start))/CLOCKS_PER_SEC;
+//   printf("Execution time for benchmark1.c WORST_FIT : %f\n" , execution_time);
+
+  
+
  
-
-  
-  mavalloc_init( 75000000, BEST_FIT );
-
-  unsigned char* array[10000];
-
-  for (int i=0; i<10000;i++)
-  {
-    array[i]=mavalloc_alloc(100+i);
-  }
-
-  // //printfList();
-
-  for (int i=0; i<10000; i++)
-  {
-    if (i % 2==0 && i%3==0)
-    {
-      mavalloc_free(array[i]);
-    }
-  }
-
-
-
-  char *ptr_1 = mavalloc_alloc(2000);
-  char *ptr_2 = mavalloc_alloc(5000);
-  mavalloc_free(ptr_2);
-  char *ptr3=mavalloc_alloc(20);
-
-
-  mavalloc_free(ptr_1);
-
-  for (int i =5000 ; i<1000;i++)
-  {
-    if (i%5==0)
-    {
-      mavalloc_free(array[i]);
-    }
-  }
-
-  unsigned char* second_array [400];
-
-  for (int i=200; i<600;i++)
-  {
-
-    second_array[i]= mavalloc_alloc(i);
-
-  }
-
-  mavalloc_free(ptr3);
-
-
-  for (int j=0; j<300;j++)
-  {
-    mavalloc_alloc(j*230);
-  }
-
-  mavalloc_free(ptr_1);
-
-  for (int k=360; k<500; k++)
-  {
-    mavalloc_alloc(k*3);
-  }
-
-  
-  end=clock();
-
-  execution_time=((double) (end-start))/CLOCKS_PER_SEC;
-  printf("Execution time for benchmark3.c BEST_FIT : %f\n" , execution_time);
-
-  // printList();
 
 
 
