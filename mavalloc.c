@@ -11,6 +11,8 @@ int initialized=0;
 int rootNode=0;
 void *arena;
 enum ALGORITHM global_algorithm;
+int current=-99;
+int previous=-99;
 
 
 
@@ -137,9 +139,9 @@ void mavalloc_free( void * ptr )
 
     if (ptr==LinkedList[i].arena)
     {
-        printf("Found %p equal to %p\n" , ptr , LinkedList[i].arena);
+        // printf("Found %p equal to %p\n" , ptr , LinkedList[i].arena);
         LinkedList[i].type=HOLE;
-        printf("Changed LinkedList[%d] at %p to a %s\n" , i , LinkedList[i].arena , str_for_enum[LinkedList[i].type]);
+        // printf("Changed LinkedList[%d] at %p to a %s\n" , i , LinkedList[i].arena , str_for_enum[LinkedList[i].type]);
         return;
     }
   }
@@ -462,6 +464,127 @@ int insertNode_FirstFit(size_t size)
 
 }
 
+int insertNode_NextFit(size_t size)
+{
+    if (current==-99 && previous==-99)
+    {
+        //Start from the top
+        current=rootNode;
+        previous=-1;
+    }
+
+    int local_previous = previous;
+    
+    current = rootNode;
+    int previous = -1;
+    int ret = -1;
+
+    int holeFound = 0;
+
+    int listTraversed = 0;
+    
+    //if we find a hole at the very beginning of our list.
+    if (LinkedList[current].type==HOLE && LinkedList[current].size>=size)
+    {
+        holeFound=1;
+        previous=-1;
+
+    }
+    else
+    {
+        //We run a loop until we find a hole big enough for our size.
+
+        //Have a flag if you never find a hole that is required.
+
+
+        //We start and check if node is in use.
+        while(current>=0 && LinkedList[current].in_use)
+        {
+            //Need to check if the curret node's next node is a hole and is of suffecient size.
+            int next_hole = LinkedList[current].next;
+
+            if(LinkedList[next_hole].size>=size && LinkedList[next_hole].type==HOLE)
+            {
+                //At this point our previous hole points to a process and the next node is a hole where we insert our process.
+
+                //Have a flag for the biggest_hole. 
+                holeFound=1;
+                previous=current;
+                break;
+
+            }
+            if (current==local_previous)
+            {
+                listTraversed=1;
+                break;
+            }
+            current=LinkedList[current].next;
+
+        }
+    }
+
+    if (listTraversed==1)
+    {
+        printf("Completed the whole list but no node was found\n");
+        return -1;
+    }
+
+
+    //need to have a case where there is no free hole of required size. 
+    //In that case current and previous remain the same. 
+    if(holeFound==0)
+    {
+        printf("There is no required size\n");
+        return -1;
+    }
+
+
+    //At this point previous is in use. 
+    //Two cases :    A-B-C-D-hole-e-f-g-hole , previous points to D and we insert our process there.
+    // Hole-a-b-c-d  , we insert our process in the head , which makes previous =-1;
+
+    int index = findFreeInternalNode();
+
+    //We store our node at index.
+
+    if (previous>=-1)
+    {
+
+        //We insert node at the previous place at the index.
+        //retunr points to the address of our new node.
+        //aks the address of previous->next;
+        //return value returns the current place of our process , it should be similar to index but there can be differences.
+        ret = insertNode(previous , index , size);
+        
+
+    }
+
+    else if (current == -1)
+    {
+
+        // If max of five then current = E.next which is -1 , previous = E
+            //aka A-B-C-D-E. Insert between E.prev aka D and the index
+
+        ret = insertNode(LinkedList[previous].previous , index , size);
+
+    }
+
+    //Here insertNode makes space for our internal nodes .
+    //Now we initialize the internalNode with required value. 
+
+    LinkedList[ret].size=size;
+    LinkedList[ret].in_use=1;
+    LinkedList[ret].type=PROCESS;
+
+    
+
+
+    return ret;
+
+
+
+}
+
 
 int insertNode_BestFit(size_t size)
 {
@@ -748,23 +871,17 @@ void * mavalloc_alloc( size_t size )
 }
 
 
-// int main()
-// {
-//     mavalloc_init( 71608, WORST_FIT );
-
-//     char * ptr1    = ( char * ) mavalloc_alloc ( 65535 );
-//     char * buffer1 = ( char * ) mavalloc_alloc( 4 );
-//     char * ptr4    = ( char * ) mavalloc_alloc ( 64 );
-//     char * buffer2 = ( char * ) mavalloc_alloc( 4 );
-//     char * ptr2    = ( char * ) mavalloc_alloc ( 6000 );
-
-//     mavalloc_free( ptr1 ); 
-//     mavalloc_free(ptr4);
-//     mavalloc_free(ptr2);
+int main()
+{
+    mavalloc_init( 71608, NEXT_FIT );
+    mavalloc_alloc(400);
     
-//     // char * ptr3 = ( char * ) mavalloc_alloc ( 1000 );
 
-//     printList();
+    
+    
+    // char * ptr3 = ( char * ) mavalloc_alloc ( 1000 );
+
+    printList();
 
 
-// }
+}
