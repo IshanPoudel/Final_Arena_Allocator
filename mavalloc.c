@@ -13,6 +13,7 @@ void *arena;
 enum ALGORITHM global_algorithm;
 
 
+
 enum TYPE
 {
     PROCESS , HOLE
@@ -132,12 +133,18 @@ void mavalloc_free( void * ptr )
 
   for (int i=0; i<MAX_LINKED_LIST_SIZE;i++)
   {
+    
+
     if (ptr==LinkedList[i].arena)
     {
+        printf("Found %p equal to %p\n" , ptr , LinkedList[i].arena);
         LinkedList[i].type=HOLE;
+        printf("Changed LinkedList[%d] at %p to a %s\n" , i , LinkedList[i].arena , str_for_enum[LinkedList[i].type]);
         return;
     }
   }
+
+  //Need to check if I am freeing the head.
 
   //check if adjacent nodes arefree
   //if they are then combine them
@@ -165,6 +172,8 @@ void mavalloc_destroy()
         LinkedList[i].type=HOLE;
     }
     free(arena);
+    arena=NULL;
+    initialized=0;
     return;
 }
 
@@ -200,6 +209,7 @@ int insertNode(int previous_index , int current_index , size_t size)
     if (LinkedList[rootNode].previous==-1 && LinkedList[rootNode].next==-1)
     {
         //Check if perfect fit. 
+        
 
         if(LinkedList[rootNode].size == size)
         {
@@ -212,6 +222,8 @@ int insertNode(int previous_index , int current_index , size_t size)
 
         //Not a perfect fit. 
         //The rootnode is a hole 
+        // printf("The hole is bigger than the process\n");
+        // printf("The size of the rootnode before doing anything %zu\n" , LinkedList[rootNode].size);
 
         LinkedList[current_index].next = rootNode;
         LinkedList[rootNode].previous = current_index;
@@ -224,7 +236,8 @@ int insertNode(int previous_index , int current_index , size_t size)
 
         //Change the size of the holes.
         LinkedList[current_index].size=size;
-        LinkedList[rootNode].size = LinkedList[rootNode].size-size;
+        // LinkedList[rootNode].size = LinkedList[rootNode].size-size;
+        printf("%zu\n" , LinkedList[rootNode].size);
 
 
         //At this point we need to change the address of our hole as we have B--HOLE and we need to update the address of the hole
@@ -450,9 +463,249 @@ int insertNode_FirstFit(size_t size)
 }
 
 
+int insertNode_BestFit(size_t size)
+{
+    /* Given the size returns the index of the node where it is inserted. 
+    If not inserted , it returns -1.
+    */
+
+   //First find a free internal node. 
+
+   
+
+   //if our hole is bigger than the process , we need to find a freeInternal Node to insert the process into. 
+
+   //Start from the beginning of the list. 
+   // If we find a node which is a hole , we nned to insert next to it.
+
+   int current = rootNode;
+   int previous = -1;
+   int ret = -1;
+
+   int holeFound = 0;
+
+   int smallest_hole = INT32_MAX;
+   int smallest_hole_index = current;
+   
+   //if we find a hole at the very beginning of our list.
+   if (LinkedList[current].type==HOLE && LinkedList[current].size>=size)
+   {
+    holeFound=1;
+    previous=-1;
+    smallest_hole=LinkedList[current].size;
+    smallest_hole_index=current;
+
+   }
+
+   
+    //We run a loop until we find a hole big enough for our size.
+
+    //Have a flag if you never find a hole that is required.
+
+
+    //We start and check if node is in use.
+    while(current>=0 && LinkedList[current].in_use)
+    {
+    //Need to check if the curret node's next node is a hole and is of suffecient size.
+    int next_hole = LinkedList[current].next;
+
+    if(LinkedList[next_hole].size>=size && LinkedList[next_hole].type==HOLE && LinkedList[next_hole].size < smallest_hole)
+    {
+        //At this point our previous hole points to a process and the next node is a hole where we insert our process.
+        smallest_hole = LinkedList[next_hole].size;
+        smallest_hole_index=next_hole;
+
+        //Have a flag for the biggest_hole. 
+        holeFound=1;
+        previous=current;
+        break;
+
+    }
+    current=LinkedList[current].next;
+
+    }
+   
+
+   //need to have a case where there is no free hole of required size. 
+   //In that case current and previous remain the same. 
+   if(holeFound==0)
+   {
+    printf("There is no required size\n");
+    return -1;
+   }
+
+
+   //At this point previous is in use. 
+   //Two cases :    A-B-C-D-hole-e-f-g-hole , previous points to D and we insert our process there.
+   // Hole-a-b-c-d  , we insert our process in the head , which makes previous =-1;
+
+   int index = findFreeInternalNode();
+
+   //We store our node at index.
+
+   if (previous>=-1)
+   {
+
+    //We insert node at the previous place at the index.
+    //retunr points to the address of our new node.
+    //aks the address of previous->next;
+    //return value returns the current place of our process , it should be similar to index but there can be differences.
+    ret = insertNode(previous , index , size);
+    
+
+   }
+
+   else if (current == -1)
+   {
+
+       // If max of five then current = E.next which is -1 , previous = E
+        //aka A-B-C-D-E. Insert between E.prev aka D and the index
+
+    ret = insertNode(LinkedList[previous].previous , index , size);
+
+   }
+
+   //Here insertNode makes space for our internal nodes .
+   //Now we initialize the internalNode with required value. 
+
+   LinkedList[ret].size=size;
+   LinkedList[ret].in_use=1;
+   LinkedList[ret].type=PROCESS;
+
+   
+
+
+   return ret;
+
+}
+
+
+int insertNode_WorstFit(size_t size)
+{
+    /* Given the size returns the index of the node where it is inserted. 
+    If not inserted , it returns -1.
+    */
+
+   //First find a free internal node. 
+
+   
+
+   //if our hole is bigger than the process , we need to find a freeInternal Node to insert the process into. 
+
+   //Start from the beginning of the list. 
+   // If we find a node which is a hole , we nned to insert next to it.
+
+   int current = rootNode;
+   int previous = -1;
+   int ret = -1;
+
+   int holeFound = 0;
+
+   int biggest_hole = 0;
+   int biggest_hole_index = current;
+   
+   //if we find a hole at the very beginning of our list.
+   if (LinkedList[current].type==HOLE && LinkedList[current].size>=size)
+   {
+    holeFound=1;
+    previous=-1;
+    biggest_hole=LinkedList[current].size;
+    biggest_hole_index=current;
+
+   }
+
+   
+    //We run a loop until we find a hole big enough for our size.
+
+    //Have a flag if you never find a hole that is required.
+
+
+    //We start and check if node is in use.
+    while(current>=0 && LinkedList[current].in_use)
+    {
+    //Need to check if the curret node's next node is a hole and is of suffecient size.
+    int next_hole = LinkedList[current].next;
+
+    if(LinkedList[next_hole].size>=size && LinkedList[next_hole].type==HOLE && LinkedList[next_hole].size > biggest_hole)
+    {
+        //At this point our previous hole points to a process and the next node is a hole where we insert our process.
+        biggest_hole = LinkedList[next_hole].size;
+        biggest_hole_index=next_hole;
+
+        //Have a flag for the biggest_hole. 
+        holeFound=1;
+        previous=current;
+        break;
+
+    }
+    current=LinkedList[current].next;
+
+    }
+   
+
+   //need to have a case where there is no free hole of required size. 
+   //In that case current and previous remain the same. 
+   if(holeFound==0)
+   {
+    printf("There is no required size\n");
+    return -1;
+   }
+
+
+   //At this point previous is in use. 
+   //Two cases :    A-B-C-D-hole-e-f-g-hole , previous points to D and we insert our process there.
+   // Hole-a-b-c-d  , we insert our process in the head , which makes previous =-1;
+
+   int index = findFreeInternalNode();
+
+   //We store our node at index.
+
+   if (previous>=-1)
+   {
+
+    //We insert node at the previous place at the index.
+    //retunr points to the address of our new node.
+    //aks the address of previous->next;
+    //return value returns the current place of our process , it should be similar to index but there can be differences.
+    ret = insertNode(previous , index , size);
+    
+
+   }
+
+   else if (current == -1)
+   {
+
+       // If max of five then current = E.next which is -1 , previous = E
+        //aka A-B-C-D-E. Insert between E.prev aka D and the index
+
+    ret = insertNode(LinkedList[previous].previous , index , size);
+
+   }
+
+   //Here insertNode makes space for our internal nodes .
+   //Now we initialize the internalNode with required value. 
+
+   LinkedList[ret].size=size;
+   LinkedList[ret].in_use=1;
+   LinkedList[ret].type=PROCESS;
+
+   
+
+
+   return ret;
+
+}
+
 void * mavalloc_alloc( size_t size )
 {
+    //if inserting without initializing or after destroying. 
     void *ptr=NULL;
+
+    if (initialized==0)
+    {
+        return NULL;
+    }
+
     size = ALIGN4(size);
 
     if(global_algorithm==FIRST_FIT)
@@ -475,12 +728,20 @@ void * mavalloc_alloc( size_t size )
     }
     else if (global_algorithm==BEST_FIT)
     {
+        int index = insertNode_BestFit(size);
+        ptr = LinkedList[index].arena;
+        printf("The pointer returned is %p\n" , ptr);
         return ptr;
 
     }
     else if (global_algorithm==WORST_FIT)
     {
+        int index = insertNode_WorstFit(size);
+        ptr = LinkedList[index].arena;
+        printf("The pointer returned is %p\n" , ptr);
         return ptr;
+
+        
 
     }
     return ptr;
@@ -489,22 +750,21 @@ void * mavalloc_alloc( size_t size )
 
 // int main()
 // {
+//     mavalloc_init( 71608, WORST_FIT );
+
+//     char * ptr1    = ( char * ) mavalloc_alloc ( 65535 );
+//     char * buffer1 = ( char * ) mavalloc_alloc( 4 );
+//     char * ptr4    = ( char * ) mavalloc_alloc ( 64 );
+//     char * buffer2 = ( char * ) mavalloc_alloc( 4 );
+//     char * ptr2    = ( char * ) mavalloc_alloc ( 6000 );
+
+//     mavalloc_free( ptr1 ); 
+//     mavalloc_free(ptr4);
+//     mavalloc_free(ptr2);
     
-// //     /*----------Test case 9------------------*/
-//     mavalloc_init( 65535, FIRST_FIT );
-//     char * ptr1 = ( char * ) mavalloc_alloc ( 10000 );
-//     char *ptr2  = (char *) mavalloc_alloc(65);
+//     // char * ptr3 = ( char * ) mavalloc_alloc ( 1000 );
 
 //     printList();
-
-//     // If you failed here your First Fit allocation on line 302 didn't return NULL like 
-//     // it should have
-//     // TINYTEST_EQUAL( ptr, NULL ); 
-
-    
-//     return 1;
-
-
 
 
 // }

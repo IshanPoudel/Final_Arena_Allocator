@@ -1,0 +1,6 @@
+First Fit: All Three
+Best Fit: 8 , 12 , 14
+           
+
+2 , 3 - coleasce nodes. 
+7 - when you free the hole set the prev and next pointers currently.
