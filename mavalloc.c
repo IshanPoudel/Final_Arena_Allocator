@@ -356,16 +356,22 @@ int insertNode_FirstFit(size_t size)
    int current = rootNode;
    int previous = -1;
    int ret = -1;
+
+   int holeFound = 0;
    
    //if we find a hole at the very beginning of our list.
    if (LinkedList[current].type==HOLE && LinkedList[current].size>=size)
    {
+    holeFound=1;
     previous=-1;
 
    }
    else
    {
     //We run a loop until we find a hole big enough for our size.
+
+    //Have a flag if you never find a hole that is required.
+
 
     //We start and check if node is in use.
      while(current>=0 && LinkedList[current].in_use)
@@ -376,6 +382,9 @@ int insertNode_FirstFit(size_t size)
         if(LinkedList[next_hole].size>=size && LinkedList[next_hole].type==HOLE)
         {
             //At this point our previous hole points to a process and the next node is a hole where we insert our process.
+
+            //Have a flag for the biggest_hole. 
+            holeFound=1;
             previous=current;
             break;
 
@@ -383,6 +392,14 @@ int insertNode_FirstFit(size_t size)
         current=LinkedList[current].next;
 
      }
+   }
+
+   //need to have a case where there is no free hole of required size. 
+   //In that case current and previous remain the same. 
+   if(holeFound==0)
+   {
+    printf("There is no required size\n");
+    return -1;
    }
 
 
@@ -452,6 +469,8 @@ void * mavalloc_alloc( size_t size )
 
     else if (global_algorithm==NEXT_FIT)
     {
+
+        
         return ptr;
     }
     else if (global_algorithm==BEST_FIT)
@@ -468,22 +487,24 @@ void * mavalloc_alloc( size_t size )
 }
 
 
-int main()
-{
+// int main()
+// {
     
-    /*----------Test case 4------------------*/
+// //     /*----------Test case 9------------------*/
+//     mavalloc_init( 65535, FIRST_FIT );
+//     char * ptr1 = ( char * ) mavalloc_alloc ( 10000 );
+//     char *ptr2  = (char *) mavalloc_alloc(65);
 
-    // mavalloc_init( 65535, FIRST_FIT );
+//     printList();
 
-    // char * ptr1  = ( char * ) mavalloc_alloc ( 10000 );
-    // char * ptr2  = ( char * ) mavalloc_alloc ( 65 );
-
-    // int size = mavalloc_size();
-    // printf("%p , %p\n" , ptr1 , ptr2);
-    // printf("Size: %d\n" , size);
-
-    // printList();
+//     // If you failed here your First Fit allocation on line 302 didn't return NULL like 
+//     // it should have
+//     // TINYTEST_EQUAL( ptr, NULL ); 
 
     
+//     return 1;
 
-}
+
+
+
+// }

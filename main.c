@@ -107,6 +107,7 @@ int test_case_3()
 */
 int test_case_4()
 {
+  
   mavalloc_init( 65535, FIRST_FIT );
 
   char * ptr1  = ( char * ) mavalloc_alloc ( 10000 );
@@ -670,12 +671,12 @@ TINYTEST_START_SUITE(MavAllocTestSuite);
   // TINYTEST_ADD_TEST(test_case_1,tinytest_setup,tinytest_teardown);
   // TINYTEST_ADD_TEST(test_case_2,tinytest_setup,tinytest_teardown);
   // TINYTEST_ADD_TEST(test_case_3,tinytest_setup,tinytest_teardown);
-  TINYTEST_ADD_TEST(test_case_4,tinytest_setup,tinytest_teardown);
+  //TINYTEST_ADD_TEST(test_case_4,tinytest_setup,tinytest_teardown);
   // TINYTEST_ADD_TEST(test_case_5,tinytest_setup,tinytest_teardown);
   // TINYTEST_ADD_TEST(test_case_6,tinytest_setup,tinytest_teardown);
   // TINYTEST_ADD_TEST(test_case_7,tinytest_setup,tinytest_teardown);
   // TINYTEST_ADD_TEST(test_case_8,tinytest_setup,tinytest_teardown);
-  TINYTEST_ADD_TEST(test_case_9,tinytest_setup,tinytest_teardown);
+  //TINYTEST_ADD_TEST(test_case_9,tinytest_setup,tinytest_teardown);
   // TINYTEST_ADD_TEST(test_case_10,tinytest_setup,tinytest_teardown);
   // TINYTEST_ADD_TEST(test_case_11,tinytest_setup,tinytest_teardown);
   // TINYTEST_ADD_TEST(test_case_12,tinytest_setup,tinytest_teardown);
