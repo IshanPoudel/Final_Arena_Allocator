@@ -76,6 +76,7 @@ void * insertNode(int size)
   return temp->arena;
 
   // printf("Added process of size %zu\n" , temp->size);
+  //need to iterate through holes before doing stuff.
 
 
   
