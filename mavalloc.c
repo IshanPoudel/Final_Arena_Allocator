@@ -141,6 +141,7 @@ void mavalloc_free( void * ptr )
     {
         // printf("Found %p equal to %p\n" , ptr , LinkedList[i].arena);
         LinkedList[i].type=HOLE;
+        current = LinkedList[i].previous;
         // printf("Changed LinkedList[%d] at %p to a %s\n" , i , LinkedList[i].arena , str_for_enum[LinkedList[i].type]);
         return;
     }
@@ -176,6 +177,9 @@ void mavalloc_destroy()
     free(arena);
     arena=NULL;
     initialized=0;
+    rootNode=0;
+    current=-99;
+    previous=-99;
     return;
 }
 
@@ -210,6 +214,7 @@ int insertNode(int previous_index , int current_index , size_t size)
 
     if (LinkedList[rootNode].previous==-1 && LinkedList[rootNode].next==-1)
     {
+        printf("I am adding when nothing is initialized\n");
         //Check if perfect fit. 
         
 
@@ -217,7 +222,10 @@ int insertNode(int previous_index , int current_index , size_t size)
         {
             LinkedList[rootNode].type=PROCESS;
 
+            current_index=rootNode;
+
             //if perfect fit , no need to return arena as it already points to what is required.
+            printf("I should be returning %p\n" , LinkedList[rootNode].arena);
             return rootNode;
             
         }
@@ -249,6 +257,12 @@ int insertNode(int previous_index , int current_index , size_t size)
         
         rootNode = current_index;
         
+        //Add pointers for next fit
+        previous=-1;
+        current=rootNode;
+
+        printf("I should be returning %p\n" , LinkedList[rootNode].arena);
+        
         return rootNode;
 
     } 
@@ -256,8 +270,12 @@ int insertNode(int previous_index , int current_index , size_t size)
     //Adding to any other place besides the rootNode. //A-B-C-Hole
     else if (previous_index>=0)
     {
+        printf("i am adding anytime before next fit\n");
+        printf("Previous: %d \n" , previous);
         //The index next to previous_index contains a hole . 
         int index_of_hole = LinkedList[previous_index].next;
+        printf("Index of hole: %d\n" , index_of_hole);
+        printf("Current index is %d\n" , current_index);
 
         //Check if perfect fit.
 
@@ -277,7 +295,12 @@ int insertNode(int previous_index , int current_index , size_t size)
             
             LinkedList[current_index].size = size;
             LinkedList[current_index].arena = LinkedList[previous_index].arena+LinkedList[previous_index].size;
-            
+
+            // current=current_index;
+            // previous=LinkedList[current_index].previous;
+            current=current_index;
+
+            printf("I should be returning %p\n" , LinkedList[current_index].arena);
 
             return current_index;
 
@@ -303,6 +326,13 @@ int insertNode(int previous_index , int current_index , size_t size)
         //Set size and arena for the hole.
         LinkedList[index_of_hole].size = LinkedList[index_of_hole].size-size;
         LinkedList[index_of_hole].arena = LinkedList[current_index].arena + LinkedList[current_index].size;
+        
+        //Change pointer to current.
+        current=current_index;
+        printf("Added LinkedList[%d] \n" , current);
+        printNode(current);
+
+        printf("I should be returning %p\n" , LinkedList[current_index].arena);
 
         
 
@@ -314,11 +344,17 @@ int insertNode(int previous_index , int current_index , size_t size)
     else
     {
         // We are adding to the front of the hole , but there are processes behind them
+        printf("I am adding to the front of the hole , but there are processes behind them\n");
+        printf("Previous: %d \n" , previous_index);
 
         //Check if perfect fit. 
         if(LinkedList[rootNode].size==size)
         {
             LinkedList[rootNode].type=PROCESS;
+
+            current_index=rootNode;
+
+            printf("I should be returning %p\n" , LinkedList[rootNode].arena);
             return rootNode;
         }
 
@@ -342,6 +378,13 @@ int insertNode(int previous_index , int current_index , size_t size)
         LinkedList[rootNode].arena = LinkedList[current_index].arena + LinkedList[current_index].size;
 
         rootNode=current_index;
+
+        //If added to the front of the hole.
+        previous=-1;
+        current=rootNode;
+        printf("I changed current to rootNode %d\n" , current);
+
+        printf("I should be returning %p\n" , LinkedList[rootNode].arena);
 
         return rootNode;
 
@@ -466,125 +509,138 @@ int insertNode_FirstFit(size_t size)
 
 int insertNode_NextFit(size_t size)
 {
-    if (current==-99 && previous==-99)
+    int index=findFreeInternalNode();
+
+    printf("i am here when adding size %zu . The current and previous are %d and %d\n" , size ,current , previous);
+    
+
+    if (current==-99 & previous==-99)
     {
-        //Start from the top
+        //nothing initialized yet
+        ////printf("I initialized current and previous once\n");
         current=rootNode;
         previous=-1;
     }
 
     int local_previous = previous;
-    
-    current = rootNode;
-    int previous = -1;
-    int ret = -1;
 
-    int holeFound = 0;
 
-    int listTraversed = 0;
     
-    //if we find a hole at the very beginning of our list.
-    if (LinkedList[current].type==HOLE && LinkedList[current].size>=size)
+    
+   
+
+
+    
+
+    
+    ////printf("The current root is at index %d\n" , current);
+    ////printf("The previous is at index %d\n " , previous);
+    
+    int ret=-1;
+    
+    //we need to insert at index.
+    //need to iterate until we find index?
+    //need to find where to insert it to end of
+
+    //need to iterate until you find a hole which is bigger than what you need and add it there.
+    //check if hole at the head , if then insert from the head.
+    //if we are starting from the beginning.
+    if(LinkedList[rootNode].type== HOLE && LinkedList[rootNode].size>=size)
     {
-        holeFound=1;
-        previous=-1;
-
+        ////printf("There is a free node at the head.\n");
+        previous=-1 ;
+        
     }
-    else
+    
+    
+
+    while( current>=0 && LinkedList[current].in_use )
     {
-        //We run a loop until we find a hole big enough for our size.
-
-        //Have a flag if you never find a hole that is required.
-
-
-        //We start and check if node is in use.
-        while(current>=0 && LinkedList[current].in_use)
+        ////printf("Current node at index %d is a %s and has size %zu\n" , current , enum_string[LinkedList[current].type] , LinkedList[current].size);
+        // if(LinkedList[current].size>size && LinkedList[current].type==HOLE)
+        if(LinkedList[LinkedList[current].next].size>=size && LinkedList[LinkedList[current].next].type==HOLE)
         {
-            //Need to check if the curret node's next node is a hole and is of suffecient size.
-            int next_hole = LinkedList[current].next;
-
-            if(LinkedList[next_hole].size>=size && LinkedList[next_hole].type==HOLE)
-            {
-                //At this point our previous hole points to a process and the next node is a hole where we insert our process.
-
-                //Have a flag for the biggest_hole. 
-                holeFound=1;
-                previous=current;
-                break;
-
-            }
-            if (current==local_previous)
-            {
-                listTraversed=1;
-                break;
-            }
-            current=LinkedList[current].next;
+            
+            printf("MATCH: Current node at index %d is a %s and has size %zu\n" , current ,str_for_enum[LinkedList[current].type] , LinkedList[current].size);
+            printf("MATCH: Next index is a hole\n");
+            previous=current;
+            break;
+        
 
         }
+        current=LinkedList[current].next;
+
+        // if (current==local_previous)
+        // {
+        //     printf("All the list traversed.\n");
+        //     return -1;
+        //     break;
+        // }
+
+        // if (current==-1)
+        // {
+        //     current=rootNode;
+        // }
+        
+        
     }
 
-    if (listTraversed==1)
+    
+
+    
+
+    //at this point the previous is in_use. 
+    ////printf("The previous value %d  is currently filled with a process and the next one is either not in use or a hole . \n" , previous );
+    if (previous>=0)
     {
-        printf("Completed the whole list but no node was found\n");
-        return -1;
+         printNode(previous);
+
     }
-
-
-    //need to have a case where there is no free hole of required size. 
-    //In that case current and previous remain the same. 
-    if(holeFound==0)
-    {
-        printf("There is no required size\n");
-        return -1;
-    }
-
-
-    //At this point previous is in use. 
-    //Two cases :    A-B-C-D-hole-e-f-g-hole , previous points to D and we insert our process there.
-    // Hole-a-b-c-d  , we insert our process in the head , which makes previous =-1;
-
-    int index = findFreeInternalNode();
-
-    //We store our node at index.
 
     if (previous>=-1)
     {
-
-        //We insert node at the previous place at the index.
-        //retunr points to the address of our new node.
-        //aks the address of previous->next;
-        //return value returns the current place of our process , it should be similar to index but there can be differences.
-        ret = insertNode(previous , index , size);
-        
-
+        ret = insertNode(previous , index , size );
+        //we insert a not between previoud and index which is always a process.
     }
-
-    else if (current == -1)
+    else if (current==-1)
     {
-
+        // We ran of the end of the list. 
         // If max of five then current = E.next which is -1 , previous = E
-            //aka A-B-C-D-E. Insert between E.prev aka D and the index
+        //aka A-B-C-D-E. Insert between E.prev aka D and the index
+        ret = insertNode(LinkedList[previous].previous , index , size );
 
-        ret = insertNode(LinkedList[previous].previous , index , size);
 
     }
 
-    //Here insertNode makes space for our internal nodes .
-    //Now we initialize the internalNode with required value. 
+    //After our node is linked , we need to change some node parameters. 
+    LinkedList[index].size=size;
+    LinkedList[index].in_use=1;
+    LinkedList[index].type=PROCESS;
 
-    LinkedList[ret].size=size;
-    LinkedList[ret].in_use=1;
-    LinkedList[ret].type=PROCESS;
+    
+    //Updating arena
+    //index contains our current inserted node. 
+    //index starts from the nex node's pointer.
+    //the previous pointer 
+    // int next = LinkedList[index].next;
+    // LinkedList[index].arena = LinkedList[next].arena;
+    // LinkedList[next].arena = LinkedList[index].arena+ LinkedList[index].size;
+
+
+    // ////printf("\nTWO NEW NODES THAT WERE CREATED ARE:\n");
+    
+    // printNode(index);
+    // printNode(LinkedList[index].next);
 
     
 
 
+   
+    
     return ret;
 
 
-
 }
-
 
 int insertNode_BestFit(size_t size)
 {
@@ -846,6 +902,10 @@ void * mavalloc_alloc( size_t size )
     else if (global_algorithm==NEXT_FIT)
     {
 
+        int index = insertNode_NextFit(size);
+        ptr =  LinkedList[index].arena;
+        printf("The pointer  returned is %p \n" , ptr);
+
         
         return ptr;
     }
@@ -871,17 +931,42 @@ void * mavalloc_alloc( size_t size )
 }
 
 
-int main()
-{
-    mavalloc_init( 71608, NEXT_FIT );
-    mavalloc_alloc(400);
+// int main()
+// {
+//     mavalloc_init( 71608, NEXT_FIT );
+//     char * ptr1 = ( char * ) mavalloc_alloc ( 1024 );
+//     //Cannot add 1024 at the first.
+//     char * buf1 = ( char * ) mavalloc_alloc ( 4 );
+//     char * ptr6 = ( char * ) mavalloc_alloc ( 16 );
+//     char * buf2 = ( char * ) mavalloc_alloc ( 4 );
+//     char * ptr2 = ( char * ) mavalloc_alloc ( 2048 );
+//     char * buf3 = ( char * ) mavalloc_alloc ( 4 );
+//     char * ptr7 = ( char * ) mavalloc_alloc ( 16 );
+//     char * buf4 = ( char * ) mavalloc_alloc ( 4 );
+//     char * ptr3 = ( char * ) mavalloc_alloc ( 1024 );
+
+//     printf("PTR 3 IS %p\n" , ptr3);
+
+//     mavalloc_free( ptr1 ); 
+//     printf("FINAL: \n\n\n");
+    
+//     mavalloc_free( ptr2 ); 
+//     mavalloc_free( ptr3 ); 
+
     
 
+//     char * ptr5 = ( char * ) mavalloc_alloc ( 2000 );
+//     char * ptr4 = ( char * ) mavalloc_alloc ( 1000 );
+//     printList();
+
+//     // once you free the memory , the previous and the current pointer should change to the previous one?
+
+
     
     
-    // char * ptr3 = ( char * ) mavalloc_alloc ( 1000 );
+//     // char * ptr = ( char * ) mavalloc_alloc ( 1000 );
 
-    printList();
+   
 
 
-}
+// }

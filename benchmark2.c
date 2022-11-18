@@ -287,6 +287,8 @@ int insertNode_NextFit(size_t size)
 {
     int index=findfreeNodeInternal(size);
 
+    
+
     if (current==-99 & previous==-99)
     {
         //nothing initialized yet
@@ -552,133 +554,134 @@ void mavalloc_free( void * ptr )
   return;
 }
 
-int main()
-{
-  clock_t start , end;
 
-  double execution_time;
+// int main()
+// {
+//   clock_t start , end;
 
-  start=clock();
+//   double execution_time;
+
+//   start=clock();
 
 
   
- mavalloc_init( 75000000, NEXT_FIT );
+//  mavalloc_init( 75000000, NEXT_FIT );
 
-  unsigned char* array[10000];
+//   unsigned char* array[10000];
 
-  for (int i=0; i<10000;i++)
-  {
-    array[i]=mavalloc_alloc(100+i);
-  }
+//   for (int i=0; i<10000;i++)
+//   {
+//     array[i]=mavalloc_alloc(100+i);
+//   }
 
-  // //printfList();
+//   // //printfList();
 
-  for (int i=0; i<10000; i++)
-  {
-    if (i % 2==0 && i%3==0)
-    {
-      mavalloc_free(array[i]);
-    }
-  }
-
-
-
-  char *ptr_1 = mavalloc_alloc(2000);
-  char *ptr_2 = mavalloc_alloc(5000);
-  mavalloc_free(ptr_2);
-  char *ptr3=mavalloc_alloc(20);
+//   for (int i=0; i<10000; i++)
+//   {
+//     if (i % 2==0 && i%3==0)
+//     {
+//       mavalloc_free(array[i]);
+//     }
+//   }
 
 
-  mavalloc_free(ptr_1);
 
-  for (int i =5000 ; i<1000;i++)
-  {
-    if (i%5==0)
-    {
-      mavalloc_free(array[i]);
-    }
-  }
-
-  unsigned char* second_array [400];
-
-  for (int i=200; i<600;i++)
-  {
-
-    second_array[i]= mavalloc_alloc(i);
-
-  }
-
-  mavalloc_free(ptr3);
+//   char *ptr_1 = mavalloc_alloc(2000);
+//   char *ptr_2 = mavalloc_alloc(5000);
+//   mavalloc_free(ptr_2);
+//   char *ptr3=mavalloc_alloc(20);
 
 
-  for (int j=0; j<300;j++)
-  {
-    mavalloc_alloc(j*230);
-  }
+//   mavalloc_free(ptr_1);
 
-  mavalloc_free(ptr_1);
+//   for (int i =5000 ; i<1000;i++)
+//   {
+//     if (i%5==0)
+//     {
+//       mavalloc_free(array[i]);
+//     }
+//   }
 
-  for (int k=360; k<500; k++)
-  {
-    mavalloc_alloc(k*3);
-  }
+//   unsigned char* second_array [400];
+
+//   for (int i=200; i<600;i++)
+//   {
+
+//     second_array[i]= mavalloc_alloc(i);
+
+//   }
+
+//   mavalloc_free(ptr3);
+
+
+//   for (int j=0; j<300;j++)
+//   {
+//     mavalloc_alloc(j*230);
+//   }
+
+//   mavalloc_free(ptr_1);
+
+//   for (int k=360; k<500; k++)
+//   {
+//     mavalloc_alloc(k*3);
+//   }
 
   
-  end=clock();
+//   end=clock();
 
-  execution_time=((double) (end-start))/CLOCKS_PER_SEC;
-  printf("Execution time for benchmark2.c NEXT_FIT : %f\n" , execution_time);
+//   execution_time=((double) (end-start))/CLOCKS_PER_SEC;
+//   printf("Execution time for benchmark2.c NEXT_FIT : %f\n" , execution_time);
 
-  // printList();
-
-
+//   // printList();
 
 
 
 
 
-    // //Test case 7
+
+
+//     // //Test case 7
     
-    // mavalloc_init( 75000, BEST_FIT );
-    // char * ptr1    = ( char * ) mavalloc_alloc ( 65535 );
-    // char * buffer1 = ( char * ) mavalloc_alloc( 1 );
-    // char * ptr4    = ( char * ) mavalloc_alloc ( 65 );
-    // char * buffer2 = ( char * ) mavalloc_alloc( 1 );
-    // char * ptr2    = ( char * ) mavalloc_alloc ( 1500 );
-    // printList();
+//     // mavalloc_init( 75000, BEST_FIT );
+//     // char * ptr1    = ( char * ) mavalloc_alloc ( 65535 );
+//     // char * buffer1 = ( char * ) mavalloc_alloc( 1 );
+//     // char * ptr4    = ( char * ) mavalloc_alloc ( 65 );
+//     // char * buffer2 = ( char * ) mavalloc_alloc( 1 );
+//     // char * ptr2    = ( char * ) mavalloc_alloc ( 1500 );
+//     // printList();
 
-    // //printf("%p\n" , ptr1);
+//     // //printf("%p\n" , ptr1);
 
     
-    //  //Test case 3
+//     //  //Test case 3
      
-    // // mavalloc_init( 65600, BEST_FIT );
+//     // // mavalloc_init( 65600, BEST_FIT );
 
-    // // char * ptr1    = (char*)mavalloc_alloc( 65536 );
-    // // char * ptr2    = (char*)mavalloc_alloc( 64 );
-    // // printList();
+//     // // char * ptr1    = (char*)mavalloc_alloc( 65536 );
+//     // // char * ptr2    = (char*)mavalloc_alloc( 64 );
+//     // // printList();
      
-    // // //printf("%p\n" , ptr1);
-    // // //printf("%p\n" , ptr2);
-    // // //printf("%d\n" ,mavalloc_size());
+//     // // //printf("%p\n" , ptr1);
+//     // // //printf("%p\n" , ptr2);
+//     // // //printf("%d\n" ,mavalloc_size());
 
-    // //Test Case 2
-    // //  mavalloc_init( 128000, BEST_FIT );
-    // //  char * ptr1    = (char*)mavalloc_alloc( 65535 );
-    // //  char * ptr2    = (char*)mavalloc_alloc( 65 );
-    // //  printList();
+//     // //Test Case 2
+//     // //  mavalloc_init( 128000, BEST_FIT );
+//     // //  char * ptr1    = (char*)mavalloc_alloc( 65535 );
+//     // //  char * ptr2    = (char*)mavalloc_alloc( 65 );
+//     // //  printList();
      
-    // //  //printf("%p\n" , ptr1);
-    // //  //printf("%p\n" , ptr2);
-    // //  //printf("%d\n" ,mavalloc_size());
-    // //Start with test cases for best_fit
-    // //Test case 1
-    // // mavalloc_init( 65535, BEST_FIT );
-    // // char * ptr = ( char * ) mavalloc_alloc ( 65535 );
-    // // //printf("I allocated the whole thing\n");
-    // // //printf("The return address %p\n" , ptr );
-    // // printList();
+//     // //  //printf("%p\n" , ptr1);
+//     // //  //printf("%p\n" , ptr2);
+//     // //  //printf("%d\n" ,mavalloc_size());
+//     // //Start with test cases for best_fit
+//     // //Test case 1
+//     // // mavalloc_init( 65535, BEST_FIT );
+//     // // char * ptr = ( char * ) mavalloc_alloc ( 65535 );
+//     // // //printf("I allocated the whole thing\n");
+//     // // //printf("The return address %p\n" , ptr );
+//     // // printList();
     
-}
+// }
 
-//When process is equal to hole size.
+// //When process is equal to hole size.

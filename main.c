@@ -668,26 +668,26 @@ int tinytest_teardown(const char *pName)
 
 
 TINYTEST_START_SUITE(MavAllocTestSuite);
-  //TINYTEST_ADD_TEST(test_case_1,tinytest_setup,tinytest_teardown);
-  // TINYTEST_ADD_TEST(test_case_2,tinytest_setup,tinytest_teardown);
-  // TINYTEST_ADD_TEST(test_case_3,tinytest_setup,tinytest_teardown);
-  //TINYTEST_ADD_TEST(test_case_4,tinytest_setup,tinytest_teardown);
-  // TINYTEST_ADD_TEST(test_case_5,tinytest_setup,tinytest_teardown);
-  //TINYTEST_ADD_TEST(test_case_6,tinytest_setup,tinytest_teardown);
-  //TINYTEST_ADD_TEST(test_case_7,tinytest_setup,tinytest_teardown);
-  //TINYTEST_ADD_TEST(test_case_8,tinytest_setup,tinytest_teardown);
-   //TINYTEST_ADD_TEST(test_case_9,tinytest_setup,tinytest_teardown);
-  //TINYTEST_ADD_TEST(test_case_10,tinytest_setup,tinytest_teardown);
-  // TINYTEST_ADD_TEST(test_case_11,tinytest_setup,tinytest_teardown);
- //TINYTEST_ADD_TEST(test_case_12,tinytest_setup,tinytest_teardown);
-  // TINYTEST_ADD_TEST(test_case_13,tinytest_setup,tinytest_teardown);
-  //TINYTEST_ADD_TEST(test_case_14,tinytest_setup,tinytest_teardown);
-  // TINYTEST_ADD_TEST(test_case_15,tinytest_setup,tinytest_teardown);
+  TINYTEST_ADD_TEST(test_case_1,tinytest_setup,tinytest_teardown);
+  TINYTEST_ADD_TEST(test_case_2,tinytest_setup,tinytest_teardown);
+  TINYTEST_ADD_TEST(test_case_3,tinytest_setup,tinytest_teardown);
+  TINYTEST_ADD_TEST(test_case_4,tinytest_setup,tinytest_teardown);
+  TINYTEST_ADD_TEST(test_case_5,tinytest_setup,tinytest_teardown);
+  TINYTEST_ADD_TEST(test_case_6,tinytest_setup,tinytest_teardown);
+  TINYTEST_ADD_TEST(test_case_7,tinytest_setup,tinytest_teardown);
+  TINYTEST_ADD_TEST(test_case_8,tinytest_setup,tinytest_teardown);
+  TINYTEST_ADD_TEST(test_case_9,tinytest_setup,tinytest_teardown);
+  TINYTEST_ADD_TEST(test_case_10,tinytest_setup,tinytest_teardown);
+  TINYTEST_ADD_TEST(test_case_11,tinytest_setup,tinytest_teardown);
+  TINYTEST_ADD_TEST(test_case_12,tinytest_setup,tinytest_teardown);
+  TINYTEST_ADD_TEST(test_case_13,tinytest_setup,tinytest_teardown);
+  TINYTEST_ADD_TEST(test_case_14,tinytest_setup,tinytest_teardown);
+  TINYTEST_ADD_TEST(test_case_15,tinytest_setup,tinytest_teardown);
   TINYTEST_ADD_TEST(test_case_16,tinytest_setup,tinytest_teardown);
-  // TINYTEST_ADD_TEST(test_case_17,tinytest_setup,tinytest_teardown);
-  //TINYTEST_ADD_TEST(test_case_18,tinytest_setup,tinytest_teardown);
-  //TINYTEST_ADD_TEST(test_case_19,tinytest_setup,tinytest_teardown);
-  // TINYTEST_ADD_TEST(test_case_20,tinytest_setup,tinytest_teardown);
+  TINYTEST_ADD_TEST(test_case_17,tinytest_setup,tinytest_teardown);
+  TINYTEST_ADD_TEST(test_case_18,tinytest_setup,tinytest_teardown);
+  TINYTEST_ADD_TEST(test_case_19,tinytest_setup,tinytest_teardown);
+  TINYTEST_ADD_TEST(test_case_20,tinytest_setup,tinytest_teardown);
  
 TINYTEST_END_SUITE();
 

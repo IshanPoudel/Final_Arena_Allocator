@@ -1,6 +1,11 @@
-First Fit: All Three
-Best Fit: 8 , 12 , 14
-           
+First Fit: 4 , 9 , 18
+Best Fit: 1 , 8 , 12 , 14 , 19
+Worst Fit : 10  , 15 , 16 
+Next Fit - 13 ,17
+
+
 
 2 , 3 - coleasce nodes. 
+6 - The last node is not freed.
 7 - when you free the hole set the prev and next pointers currently.
+NEXT_FIT - 5 , 11 , 20
