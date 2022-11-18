@@ -120,25 +120,47 @@ int main()
 
   unsigned char* array[10000];
 
-  for (int i=0; i<10000;i++)
+  for (int i=0 ; i<10000;i++)
   {
-    array[i]=insertNode(100+i);
+    array[i]=insertNode(100);
   }
 
-  for (int i=1; i<10000; i++)
+  for (int i=1000; i<10000;i++)
   {
-    if (i % 2==0 && i%3==0)
+    if (i%7==0)
     {
       removeNode(array[i]);
     }
+
   }
 
-  char *ptr_1 = insertNode(2000);
-  char *ptr_2 = insertNode(5000);
-  // free(ptr_2);
-  char *ptr3=insertNode(20);
+  // //free memory at the beginning
 
-  removeNode(ptr_1);
+  
+
+  // //printfList();
+
+  // for (int i=0; i<10000; i++)
+  // {
+  //   if (i % 2==0 && i%3==0)
+  //   {
+  //     removeNode(array[i]);
+  //   }
+  // }
+
+  
+
+
+
+  char *ptr_1 = insertNode(200000);
+  char *ptr_2 = insertNode(5000);
+  char*ptr3  = insertNode(98);
+  insertNode(1);
+  removeNode(ptr_2);
+  insertNode(20);
+
+
+  removeNode(ptr3);
 
   for (int i =5000 ; i<1000;i++)
   {
@@ -162,7 +184,7 @@ int main()
 
   for (int j=0; j<300;j++)
   {
-    insertNode(j*230);
+    insertNode(98*j);
   }
 
   removeNode(ptr_1);
@@ -172,12 +194,26 @@ int main()
     insertNode(k*3);
   }
 
+  for (int i=3000; i<4000;i++)
+  {
+    removeNode(array[i]);
+  }
+
+  
+
+  for (int i=0; i<10000;i++)
+  {
+    insertNode(4);
+  }
+
  
 
   end=clock();
 
   execution_time=((double) (end-start))/CLOCKS_PER_SEC;
   printf("Execution time for benchmark5.c MALLOC : %f\n" , execution_time);
+
+  
 
 
   
