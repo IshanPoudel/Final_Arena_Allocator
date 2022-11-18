@@ -197,6 +197,8 @@ int test_case_5()
   // If you failed here your Next Fit algorithm is not choosing
   // the correct hole 
   TINYTEST_EQUAL( ptr3, ptr4 ); 
+
+  // printf("I am in main and called mavalloc_destroy\n");
   mavalloc_destroy( );
   return 1;
 }
